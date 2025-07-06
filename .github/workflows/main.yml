@@ -13,6 +13,9 @@ permissions:
 jobs:
   deploy:
     runs-on: windows-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     env:
       PROJECT_DIR: 'frontend'  # Your frontend directory name
 
