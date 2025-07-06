@@ -5,12 +5,22 @@ on:
     branches: ['main']
   workflow_dispatch:
 
+# Required permissions for GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write  # Fixes the permission error
+
 jobs:
   deploy:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ./frontend  # All steps will run in /frontend
+        working-directory: ./frontend  # All commands run in /frontend
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       # 1. Checkout code
@@ -23,18 +33,24 @@ jobs:
         with:
           node-version: '20'
 
-      # 3. Install and build (runs in /frontend)
+      # 3. Install and build
       - name: Install dependencies
         run: npm ci
 
       - name: Build project
         run: npm run build
 
-      # 4. Deploy to Pages
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './frontend/dist'  # Adjusted path for Windows
+      # 4. Configure Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
+      # 5. Upload artifacts
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './dist'  # Relative to /frontend
+
+      # 6. Deploy
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        id: deployment
+        uses: actions/deploy-pages@v3
