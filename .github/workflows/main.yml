@@ -4,49 +4,50 @@ on:
   push:
     branches: ['main']
   workflow_dispatch:
-# Required permissions for GitHub Pages
+
 permissions:
   contents: read
   pages: write
-  id-token: write  # Fixes the permission error
+  id-token: write
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Recommended for GitHub Pages
     defaults:
       run:
-        working-directory: ./frontend  # All steps will run in /frontend
+        working-directory: ./frontend
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Node.js
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      # 3. Install and build (runs in /frontend)
       - name: Install dependencies
         run: npm ci
 
       - name: Build project
-        run:  |
+        run: |
           npm run build
-          # Fix for asset paths
+          # Fix asset paths and create 404.html
           sed -i 's|/assets/|./assets/|g' dist/index.html
-          cp dist/index.html
+          cp dist/index.html dist/404.html
 
-      # 4. Deploy to Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: './frontend/dist'  # Adjusted path for Windows
+          path: 'dist'  # Relative to working directory
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2
