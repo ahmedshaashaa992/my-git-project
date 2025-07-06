@@ -16,6 +16,9 @@ jobs:
     defaults:
       run:
         working-directory: ./frontend  # All steps will run in /frontend
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       # 1. Checkout code
