@@ -39,7 +39,7 @@ jobs:
         run:  |
           npm run build
           # Fix for asset paths
-          sed -i 's|/assets/|./assets/|g' build/index.html
+          sed -i 's|/assets/|./assets/|g' dist/index.html
           cp dist/index.html
 
       # 4. Deploy to Pages
