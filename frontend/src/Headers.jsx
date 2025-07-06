@@ -5,6 +5,7 @@ function Headers() {
     <>
      <div><h1>Welcome to Group A react platform</h1></div>
         <div><h1>Teacher: Ahmed Shaashaa</h1></div>
+        <div><h1> Teacher: Amina Alfadawiee</h1></div>
     </>
   )
 }
