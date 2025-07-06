@@ -36,7 +36,11 @@ jobs:
         run: npm ci
 
       - name: Build project
-        run: npm run build
+        run:  |
+          npm run build
+          # Fix for asset paths
+          sed -i 's|/assets/|./assets/|g' build/index.html
+          cp build/index.html build/404.html
 
       # 4. Deploy to Pages
       - name: Upload artifact

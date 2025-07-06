@@ -1,9 +1,10 @@
 {
-  "homepage": "https://ahmedshaashaa992.github.io/my-git-project",
+  "homepage": "./",
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "build":"react-scrits build",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
