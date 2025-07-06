@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          path: 'frontend'  # Explicitly check out into frontend folder
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -32,12 +34,19 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f yarn.lock ]; then
+            yarn install --frozen-lockfile
+          else
+            npm install
+          fi
 
       - name: Build project
         run: |
           npm run build
-          # Fix asset paths for GitHub Pages
+          # Fix asset paths
           sed -i 's|/assets/|./assets/|g' dist/index.html
           # Create 404.html for client-side routing
           cp dist/index.html dist/404.html
@@ -50,7 +59,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist'
+          path: 'frontend/dist'  # Full path from repo root
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
