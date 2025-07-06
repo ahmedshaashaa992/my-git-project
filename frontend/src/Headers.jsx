@@ -11,6 +11,7 @@ function Headers() {
         <div><h1>Mahdi AL Hariri</h1></div>
         <div><h1> Teacher: Amina Alfadawiee</h1></div>
         <div><h1>haitham almohammad</h1></div>
+        <div><h1>student: mohammad alfares</h1></div>
     </>
 
   )
