@@ -17,49 +17,61 @@ jobs:
       run:
         working-directory: ./frontend
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
-      - name: Checkout repository
+      # 1. Checkout entire repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: 'frontend'  # Explicitly check out into frontend folder
 
+      # 2. Verify lockfile exists
+      - name: Check for lockfile
+        id: check-lockfile
+        run: |
+          cd frontend
+          if [ -f package-lock.json ]; then
+            echo "lockfile=package-lock.json" >> $GITHUB_OUTPUT
+          elif [ -f yarn.lock ]; then
+            echo "lockfile=yarn.lock" >> $GITHUB_OUTPUT
+          else
+            echo "No lockfile found!" >&2
+            exit 1
+          fi
+
+      # 3. Setup Node with cache
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
+      # 4. Install dependencies
       - name: Install dependencies
+        working-directory: ./frontend
         run: |
-          if [ -f package-lock.json ]; then
+          if [ "${{ steps.check-lockfile.outputs.lockfile }}" == "package-lock.json" ]; then
             npm ci
-          elif [ -f yarn.lock ]; then
-            yarn install --frozen-lockfile
           else
-            npm install
+            yarn install --frozen-lockfile
           fi
 
-      - name: Build project
+      # 5. Build with path fixes
+      - name: Build
+        working-directory: ./frontend
         run: |
           npm run build
-          # Fix asset paths
           sed -i 's|/assets/|./assets/|g' dist/index.html
-          # Create 404.html for client-side routing
           cp dist/index.html dist/404.html
-          # Verify build output
+          echo "Build contents:"
           ls -R dist
 
+      # 6. Deploy to Pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'frontend/dist'  # Full path from repo root
+          path: 'frontend/dist'
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: actions/deploy-pages@v4
