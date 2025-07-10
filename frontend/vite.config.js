@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/my-git-project/",
+  // base: "/my-git-project/",
   plugins: [react()],
   build: {
     outDir: 'dist',
