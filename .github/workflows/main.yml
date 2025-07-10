@@ -18,6 +18,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     env:
       PROJECT_DIR: 'frontend'  # Your frontend directory name
+      BASE_URL: '/'
 
     steps:
       # 1. Checkout repository
@@ -71,7 +72,9 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         shell: pwsh
         run: |
-          npm run build
+          npm run build -- --base=${{env.BASE_URL}}
+          # Add .nojekyll to prevent GitHub from ignoring assets
+          New-Item -Path "dist/.nojekyll" -ItemType File
           # Fix asset paths
           (Get-Content "dist/index.html") -replace '/assets/', '/assets/' | Set-Content "dist/index.html"
           # Create 404.html
