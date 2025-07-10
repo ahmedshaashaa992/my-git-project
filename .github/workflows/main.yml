@@ -73,7 +73,7 @@ jobs:
         run: |
           npm run build
           # Fix asset paths
-          (Get-Content "dist/index.html") -replace '/assets/', '/assets/' | Set-Content "dist/index.html"
+          (Get-Content "dist/index.html") -replace '/assets/', 'my-git-project/assets/' | Set-Content "dist/index.html"
           # Create 404.html
           Copy-Item "dist/index.html" "dist/404.html"
           # Verify build
