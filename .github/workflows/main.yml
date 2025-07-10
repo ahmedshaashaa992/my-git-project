@@ -17,7 +17,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     env:
-      PROJECT_DIR: 'frontend'  # Your frontend directory name
+      PROJECT_DIR: 'my-git-project/frontend'  # Your frontend directory name
 
     steps:
       # 1. Checkout repository
