@@ -4,7 +4,7 @@ function Headers() {
   return (
     <>
      <div><h1>Welcome to Group A react platform</h1></div>
-        <div><h1 style={{color:"green"}}>Teacher: Ahmed Shaashaa</h1></div>
+        <div><h1 style={{color:"blue"}}>Teacher: Ahmed Shaashaa</h1></div>
         <div><h2 style={{color:"red"}}>Student: Yasser Abdulmala</h2></div>
         <div><h2 style={{color:"red"}}>Student: Reem Asaad</h2></div>
         <div><h2 style={{color:"red"}}>Student: Reem Abdullah</h2></div>
